@@ -11,22 +11,22 @@ import rx.Subscription;
  * Created by cteegarden on 1/28/16.
  */
 @SuppressWarnings("unchecked")
-public class BranchPresenter {
+public class PresenterLayer implements PresenterInteractor {
 
-    private MainActivity view;
+    private ActivityView view;
     private NetworkService service;
     private Subscription subscription;
 
-    public BranchPresenter(MainActivity view, NetworkService service){
+    public PresenterLayer(ActivityView view, NetworkService service){
         this.view = view;
         this.service = service;
     }
 
     public void loadRxData(){
         view.showRxInProcess();
-        Observable<BranchResponse> branchResponseObservable = (Observable<BranchResponse>)
-                service.getPreparedObservable(service.getAPI().getBranchesObservable(), BranchResponse.class, true, true);
-        subscription = branchResponseObservable.subscribe(new Observer<BranchResponse>() {
+        Observable<FriendResponse> friendResponseObservable = (Observable<FriendResponse>)
+                service.getPreparedObservable(service.getAPI().getFriendsObservable(), FriendResponse.class, true, true);
+        subscription = friendResponseObservable.subscribe(new Observer<FriendResponse>() {
             @Override
             public void onCompleted() {
 
@@ -38,7 +38,7 @@ public class BranchPresenter {
             }
 
             @Override
-            public void onNext(BranchResponse response) {
+            public void onNext(FriendResponse response) {
                 view.showRxResults(response);
             }
         });
@@ -46,10 +46,10 @@ public class BranchPresenter {
 
     public void loadRetroData(){
         view.showRetroInProcess();
-        Call<BranchResponse> call = service.getAPI().getBranches();
-        call.enqueue(new Callback<BranchResponse>() {
+        Call<FriendResponse> call = service.getAPI().getFriends();
+        call.enqueue(new Callback<FriendResponse>() {
             @Override
-            public void onResponse(Response<BranchResponse> response) {
+            public void onResponse(Response<FriendResponse> response) {
                 view.showRetroResults(response);
             }
 

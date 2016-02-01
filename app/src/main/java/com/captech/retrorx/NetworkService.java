@@ -24,7 +24,6 @@ import rx.schedulers.Schedulers;
 public class NetworkService{
 
     private static String baseUrl ="https://dl.dropboxusercontent.com/u/57707756/";
-    // -for mockey private static String baseUrl = "http://10.0.3.2:8080/service/";
     private NetworkAPI networkAPI;
     private OkHttpClient okHttpClient;
     private HashMap<String, Observable<?>> apiObservables;
@@ -135,13 +134,13 @@ public class NetworkService{
      */
     public interface NetworkAPI {
 
-        //-for mockey @GET("branchLocations")
-        @GET("BranchLocations.json")//real endpoint
-        Call<BranchResponse> getBranches();
 
-        //-for mockey @GET("branchLocations")
-        @GET("BranchLocations.json") //real endpoint
-        Observable<BranchResponse> getBranchesObservable();
+        @GET("FriendLocations.json")//real endpoint
+        Call<FriendResponse> getFriends();
+
+
+        @GET("FriendLocations.json") //real endpoint
+        Observable<FriendResponse> getFriendsObservable();
 
     }
 

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import retrofit2.Response;
 
 
-public class MainActivity extends AppCompatActivity implements OnClickListener {
+public class ActivityView extends AppCompatActivity implements OnClickListener {
 
     private static final String EXTRA_RX = "EXTRA_RX";
     private Button rxCall, retroCall;
@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     private ProgressBar progressBar;
     private NetworkService service;
     private boolean rxCallInWorks = false;
-    private BranchPresenter presenter;
+    private PresenterInteractor presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         rxCall.setOnClickListener(this);
         retroCall.setOnClickListener(this);
         service = ((RxApplication)getApplication()).getNetworkService();
-        presenter = new BranchPresenter(this, service);
+        presenter = new PresenterLayer(this, service);
         if(savedInstanceState!=null){
             rxCallInWorks = savedInstanceState.getBoolean(EXTRA_RX);
         }
@@ -75,9 +75,9 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
 
 
-    protected void showRxResults(BranchResponse response){
+    protected void showRxResults(FriendResponse response){
         rxCallInWorks = false;
-        rxResponse.setText(response.branchLocations.data.branch.get(0).branchName);
+        rxResponse.setText(response.friendLocations.data.friend.get(0).friendName);
         rxResponse.setVisibility(View.VISIBLE);
         rxCall.setEnabled(true);
         retroCall.setEnabled(true);
@@ -94,8 +94,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         progressBar.setVisibility(View.GONE);
     }
 
-    protected void showRetroResults(Response<BranchResponse> response){
-        retroResponse.setText(response.body().branchLocations.data.branch.get(0).branchName);
+    protected void showRetroResults(Response<FriendResponse> response){
+        retroResponse.setText(response.body().friendLocations.data.friend.get(0).friendName);
         retroResponse.setVisibility(View.VISIBLE);
         retroCall.setEnabled(true);
         rxCall.setEnabled(true);
