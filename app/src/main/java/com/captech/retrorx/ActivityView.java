@@ -76,7 +76,6 @@ public class ActivityView extends AppCompatActivity implements OnClickListener {
 
 
     protected void showRxResults(FriendResponse response){
-        rxCallInWorks = false;
         rxResponse.setText(response.friendLocations.data.friend.get(0).friendName);
         rxResponse.setVisibility(View.VISIBLE);
         rxCall.setEnabled(true);
@@ -86,7 +85,6 @@ public class ActivityView extends AppCompatActivity implements OnClickListener {
 
     protected void showRxFailure(Throwable throwable){
         Log.d("TAG", throwable.toString());
-        rxCallInWorks = false;
         rxResponse.setText("ERROR");
         rxResponse.setVisibility(View.VISIBLE);
         rxCall.setEnabled(true);
