@@ -1,8 +1,9 @@
 package com.captech.retrorx;
 
 
+import android.support.v4.util.LruCache;
+
 import java.io.IOException;
-import java.util.HashMap;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -26,7 +27,7 @@ public class NetworkService{
     private static String baseUrl ="https://dl.dropboxusercontent.com/u/57707756/";
     private NetworkAPI networkAPI;
     private OkHttpClient okHttpClient;
-    private HashMap<String, Observable<?>> apiObservables;
+    private LruCache<Class<?>, Observable<?>> apiObservables;
 
     public NetworkService(){
         this(baseUrl);
@@ -34,8 +35,7 @@ public class NetworkService{
 
     public NetworkService(String baseUrl){
         okHttpClient = buildClient();
-        apiObservables = new HashMap<>();
-
+        apiObservables = new LruCache<>(10);
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -90,7 +90,7 @@ public class NetworkService{
      * Method to clear the entire cache of observables
      */
     public void clearCache(){
-        apiObservables = new HashMap<>();
+        apiObservables.evictAll();
     }
 
 
@@ -104,10 +104,11 @@ public class NetworkService{
      * @return Observable ready to be subscribed to
      */
     public Observable<?> getPreparedObservable(Observable<?> unPreparedObservable, Class<?> clazz, boolean cacheObservable, boolean useCache){
+
         Observable<?> preparedObservable = null;
 
         if(useCache)//this way we don't reset anything in the cache if this is the only instance of us not wanting to use it.
-            preparedObservable = apiObservables.get(clazz.toString());
+            preparedObservable = apiObservables.get(clazz);
 
         if(preparedObservable!=null)
             return preparedObservable;
@@ -121,7 +122,7 @@ public class NetworkService{
 
         if(cacheObservable){
             preparedObservable = preparedObservable.cache();
-            apiObservables.put(clazz.toString(), preparedObservable);
+            apiObservables.put(clazz, preparedObservable);
         }
 
 
